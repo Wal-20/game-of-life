@@ -214,6 +214,7 @@
 			growGridFor(cx, cy);
 			birthCell(cx, cy);
 		}
+		if(on.size === 0) playing = false;
 	}
 </script>
 
