@@ -1,7 +1,18 @@
 <script lang="ts">
-    import { fade } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
-	import { game, on, refs, CELL, MIN_SCALE, MAX_SCALE, birthCell, killCell, gameLoop, centerView } from '../game.svelte';
+	import {
+		game,
+		on,
+		refs,
+		CELL,
+		MIN_SCALE,
+		MAX_SCALE,
+		birthCell,
+		killCell,
+		gameLoop,
+		centerView
+	} from '../game.svelte';
 
 	let viewport: HTMLElement;
 	let dragging = $state(false);
@@ -130,7 +141,7 @@
 	oncontextmenu={(e) => e.preventDefault()}
 >
 	<div
-		class="canvas"
+	    class={['canvas', game.playing && 'active']}
 		style:width="{game.half * 2 * CELL}px"
 		style:height="{game.half * 2 * CELL}px"
 		style:transform="translate({game.offsetX}px, {game.offsetY}px) scale({game.scale}) translate({-game.half *
@@ -165,14 +176,14 @@
 />
 
 <style>
-    .viewport {
-	width: 100%;
-	height: 100%;
-	position: relative;
-	overflow: hidden;
-	touch-action: none;
-	background-color: var(--bg);
-    }
+	.viewport {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		overflow: hidden;
+		touch-action: none;
+		background-color: var(--bg);
+	}
 
 	.viewport.dragging {
 		cursor: grabbing;
@@ -189,6 +200,10 @@
 		background-color: var(--bg);
 	}
 
+	.canvas:not(.active) {
+		border: 1px solid var(--fg);
+	}
+
 	.cell {
 		position: absolute;
 		width: 10px;
@@ -197,5 +212,5 @@
 	}
 	.cell.glow {
 		box-shadow: 0 0 6px var(--fg);
-	}	
+	}
 </style>
