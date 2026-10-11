@@ -1,2 +1,10 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
+@import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:ital,wght@0,100..900;1,100..900&display=swap');
+
+.chivo-mono-1 {
+  font-family: "Chivo Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}

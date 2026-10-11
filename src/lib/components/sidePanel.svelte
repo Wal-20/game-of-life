@@ -1,35 +1,51 @@
 <script lang="ts">
-	import { game, on, restart, color_palettes } from '../game.svelte';
+	import { game, restart, color_palettes } from '../game.svelte';
 	let panelHidden = $state(false);
+	let open = $state(false);
 </script>
 
 <div class={panelHidden ? 'hide' : ''}>
-	<aside class="panel">
-		<p>Live cells: {on.size}</p>
-		<p>Grid: {game.half * 2} × {game.half * 2}</p>
+	<aside class="panel" class:open>
+		<section>
+			<h3>Speed <b>{game.tickMs} ms</b></h3>
+			<input
+				class="range"
+				type="range"
+				min="50"
+				max="1000"
+				step="50"
+				bind:value={game.tickMs}
+				style:--pct="{((game.tickMs - 50) / 950) * 100}%"
+			/>
+		</section>
 
-		<label class="speed">
-			<span>Speed <b>{game.tickMs} ms</b></span>
-			<input type="range" min="50" max="1000" step="50" bind:value={game.tickMs} />
-		</label>
-		<label><input type="checkbox" bind:checked={game.glow} /> Glow</label>
-		<label><input type="checkbox" bind:checked={game.fade} /> Fade</label>
+		<section>
+			<label class="toggle">
+				<span>Glow</span>
+				<input type="checkbox" bind:checked={game.glow} />
+			</label>
+			<label class="toggle">
+				<span>Fade</span>
+				<input type="checkbox" bind:checked={game.fade} />
+			</label>
+		</section>
 
-		<div class="palettes">
-			{#each color_palettes as [bg, fg], i}
-				<button
-					class="swatch"
-					class:selected={game.selectedColorPalette === i}
-					style:--a={bg}
-					style:--b={fg}
-					onclick={() => (game.selectedColorPalette = i)}
-					aria-label="Palette {i + 1}"
-					aria-pressed={game.selectedColorPalette === i}
-				></button>
-			{/each}
-		</div>
+		<section>
+			<div class="palettes">
+				{#each color_palettes as [bg, fg], i (i)}
+					<button
+						class="swatch"
+						class:selected={game.selectedColorPalette === i}
+						style:--a={bg}
+						style:--b={fg}
+						onclick={() => (game.selectedColorPalette = i)}
+						aria-label="Palette {i + 1}"
+						aria-pressed={game.selectedColorPalette === i}
+					></button>
+				{/each}
+			</div>
+		</section>
 	</aside>
-
 	<div class="controls">
 		<button
 			onclick={() => (game.playing = !game.playing)}
@@ -60,6 +76,19 @@
 				<path d="M3 4v5h5" />
 			</svg>
 		</button>
+		<button class="menu" onclick={() => (open = !open)} aria-label="Settings" aria-expanded={open}>
+			<svg
+				viewBox="0 0 24 24"
+				width="20"
+				height="20"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+			>
+				<path d="M4 6h16M4 12h16M4 18h16" />
+			</svg>
+		</button>
 	</div>
 </div>
 
@@ -67,24 +96,137 @@
 	.hide {
 		display: none;
 	}
+
 	.panel {
 		position: absolute;
 		left: 24px;
 		top: 50%;
 		transform: translateY(-50%);
 		z-index: 10;
-		width: 220px;
-		padding: 16px;
-		border-radius: 16px;
-		background: color-mix(in srgb, var(--bg, white) 85%, transparent);
-		border: 1px solid var(--fg, gray);
-		backdrop-filter: blur(6px);
+		width: 240px;
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		border-radius: 20px;
 		color: var(--fg);
+		background: color-mix(in srgb, var(--bg) 80%, transparent);
+		border: 1px solid color-mix(in srgb, var(--fg) 35%, transparent);
+		backdrop-filter: blur(10px);
+		font-size: 13px;
 	}
+
+	section {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	h3 {
+		margin: 0;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	h3 b {
+		opacity: 1;
+		font-weight: 600;
+		letter-spacing: 0;
+		text-transform: none;
+	}
+
+	/* slider */
+	.range {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 100%;
+		height: 6px;
+		border-radius: 3px;
+		outline: none;
+		cursor: pointer;
+		background: linear-gradient(
+			to right,
+			var(--fg) var(--pct),
+			color-mix(in srgb, var(--fg) 25%, transparent) var(--pct)
+		);
+	}
+
+	.range::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: var(--fg);
+		border: 3px solid var(--bg);
+		box-shadow: 0 0 0 1px var(--fg);
+	}
+
+	.range::-moz-range-thumb {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: var(--fg);
+		border: 3px solid var(--bg);
+		box-shadow: 0 0 0 1px var(--fg);
+	}
+
+	.range:focus-visible::-webkit-slider-thumb {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	/* switches */
+	.toggle {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		cursor: pointer;
+		font-size: 14px;
+	}
+
+	.toggle input {
+		-webkit-appearance: none;
+		appearance: none;
+		position: relative;
+		width: 34px;
+		height: 20px;
+		margin: 0;
+		border-radius: 10px;
+		cursor: pointer;
+		background: color-mix(in srgb, var(--fg) 25%, transparent);
+		transition: background 0.15s;
+	}
+
+	.toggle input::after {
+		content: '';
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: var(--bg);
+		transition: transform 0.15s;
+	}
+
+	.toggle input:checked {
+		background: var(--fg);
+	}
+
+	.toggle input:checked::after {
+		transform: translateX(14px);
+	}
+
+	.toggle input:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
 	.palettes {
-	    margin-top: 10px;
+		margin-top: 10px;
 		display: grid;
-		grid-template-columns: repeat(3, 35px);
+		grid-template-columns: repeat(3, 30px);
+		gap: 8px;
 	}
 
 	.swatch {
@@ -96,7 +238,19 @@
 		cursor: pointer;
 		/* hard stop at 50% = two solid halves */
 		background: linear-gradient(to right, var(--a) 50%, var(--b) 50%);
+		transition: transform 0.12s;
 	}
+
+	.swatch:hover {
+		transform: scale(1.08);
+	}
+
+	.swatch.selected {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	/* play / restart */
 	.controls {
 		position: fixed;
 		bottom: 16px;
@@ -109,67 +263,45 @@
 
 	.controls button {
 		cursor: pointer;
-		border: 1px solid black;
+		border: 1px solid var(--fg);
 		padding: 5px 12px;
 		display: flex;
 		align-items: center;
-		background: white;
+		color: var(--fg);
+		background: var(--bg);
 	}
 
-	.speed {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		margin-top: 16px;
-		font-size: 14px;
-		color: var(--fg, black);
+	.controls button:hover {
+		background: color-mix(in srgb, var(--fg) 15%, var(--bg));
+	}
+	.controls .menu {
+		display: none;
 	}
 	
-	.speed span {
-		display: flex;
-		justify-content: space-between;
-	}
+	@media (max-width: 700px) {
+		.controls .menu {
+			display: flex;
+		}
 	
-	.speed input {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 100%;
-		height: 4px;
-		border-radius: 2px;
-		background: color-mix(in srgb, var(--fg, black) 30%, transparent);
-		outline: none;
-		cursor: pointer;
-	}
+		.panel {
+			display: none;
+			top: auto;
+			bottom: 72px; /* clears the controls row */
+			left: 12px;
+			right: 12px;
+			width: auto;
+			max-height: 55vh;
+			overflow-y: auto;
+			box-sizing: border-box;
+			transform: none; /* drops the desktop vertical centering */
+		}
 	
-	/* thumb: Chrome, Safari, Edge */
-	.speed input::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		width: 16px;
-		height: 16px;
-		border-radius: 50%;
-		background: var(--fg, black);
-		border: 2px solid var(--bg, white);
-		box-shadow: 0 0 0 1px var(--fg, black);
-	}
+		.panel.open {
+			display: flex;
+		}
 	
-	/* thumb: Firefox */
-	.speed input::-moz-range-thumb {
-		width: 12px;
-		height: 12px;
-		border-radius: 50%;
-		background: var(--fg, black);
-		border: 2px solid var(--bg, white);
-		box-shadow: 0 0 0 1px var(--fg, black);
-	}
-	
-	.speed input::-moz-range-track {
-		height: 4px;
-		border-radius: 2px;
-		background: color-mix(in srgb, var(--fg, black) 30%, transparent);
-	}
-	
-	.speed input:focus-visible::-webkit-slider-thumb {
-		outline: 2px solid var(--fg, black);
-		outline-offset: 2px;
+		.palettes {
+			grid-template-columns: repeat(auto-fill, 30px);
+		}
 	}
 </style>

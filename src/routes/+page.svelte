@@ -5,7 +5,7 @@
 	const colors = $derived(color_palettes[game.selectedColorPalette]);
 </script>
 
-<div class="layout" style:--bg={colors[0]} style:--fg={colors[1]}>
+<div class="layout chivo-mono-1" style:--bg={colors[0]} style:--fg={colors[1]}>
 	<SidePanel />
 	<Grid />
 </div>

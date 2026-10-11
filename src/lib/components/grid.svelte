@@ -187,7 +187,6 @@
 		will-change: transform;
 		background-size: 10px 10px;
 		background-color: var(--bg);
-		outline: 1px solid var(--fg);
 	}
 
 	.cell {
