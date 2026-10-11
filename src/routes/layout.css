@@ -12,3 +12,23 @@
 button {
 	   cursor: pointer;
 }
+
+html,
+body {
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none; /* iOS long-press menu */
+}
+
+img,
+svg {
+	-webkit-user-drag: none;
+	pointer-events: none; /* no image context menu or drag */
+}
+
+/* keep the RLE box usable */
+textarea,
+input[type='text'] {
+	user-select: text;
+	-webkit-user-select: text;
+}

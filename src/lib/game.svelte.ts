@@ -26,6 +26,7 @@ export const game = $state({
   selectedColorPalette: 6,
   glow: false,
   fade: false,
+  drawMode: false,
 });
 
 export const on = new SvelteSet<string>(); // "x,y" keys of ON cells

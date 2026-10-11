@@ -23,6 +23,12 @@
 	let moved = 0;
 	let drawing = false;
 
+	// active pointers, for pinch
+	const pointers = new Map<number, { x: number; y: number }>();
+	let pinchDist = 0;
+	let pinchMidX = 0;
+	let pinchMidY = 0;
+
 	const FADE_MS = 150;
 	const fadeMs = $derived(game.fade ? FADE_MS : 0);
 
@@ -41,23 +47,23 @@
 		return () => clearInterval(id);
 	});
 
-	function onWheel(event: WheelEvent) {
-		event.preventDefault();
-
-		const rect = viewport.getBoundingClientRect();
-		const mx = event.clientX - rect.left;
-		const my = event.clientY - rect.top;
-
-		const next = Math.min(
-			MAX_SCALE,
-			Math.max(MIN_SCALE, game.scale * Math.exp(-event.deltaY * 0.002))
-		);
+	// zoom to `target`, keeping the screen point (mx, my) fixed
+	function zoomAt(mx: number, my: number, target: number) {
+		const next = Math.min(MAX_SCALE, Math.max(MIN_SCALE, target));
 		const ratio = next / game.scale;
-
-		// keep the point under the cursor fixed
 		game.offsetX = mx - (mx - game.offsetX) * ratio;
 		game.offsetY = my - (my - game.offsetY) * ratio;
 		game.scale = next;
+	}
+
+	function onWheel(event: WheelEvent) {
+		event.preventDefault();
+		const rect = viewport.getBoundingClientRect();
+		zoomAt(
+			event.clientX - rect.left,
+			event.clientY - rect.top,
+			game.scale * Math.exp(-event.deltaY * 0.002)
+		);
 	}
 
 	function cellAt(event: PointerEvent) {
@@ -68,11 +74,29 @@
 		return [cx, cy];
 	}
 
+	// mouse: ctrl draws. touch / pen: the draw mode toggle draws.
+	function wantsDraw(event: PointerEvent) {
+		return event.pointerType === 'mouse' ? event.ctrlKey : game.drawMode;
+	}
+
 	function startDrag(event: PointerEvent) {
 		if (event.button !== 0) return;
+		pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 		(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
 
-		if (event.ctrlKey) {
+		if (pointers.size === 2) {
+			// second finger: abandon the single-finger action, start a pinch
+			dragging = false;
+			drawing = false;
+			const [a, b] = [...pointers.values()];
+			pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+			pinchMidX = (a.x + b.x) / 2;
+			pinchMidY = (a.y + b.y) / 2;
+			return;
+		}
+		if (pointers.size > 2) return;
+
+		if (wantsDraw(event)) {
 			drawing = true;
 			drawAt(event);
 			return;
@@ -87,6 +111,28 @@
 	}
 
 	function moveDrag(event: PointerEvent) {
+		if (pointers.has(event.pointerId)) {
+			pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+		}
+
+		if (pointers.size === 2) {
+			const [a, b] = [...pointers.values()];
+			const dist = Math.hypot(a.x - b.x, a.y - b.y);
+			const mx = (a.x + b.x) / 2;
+			const my = (a.y + b.y) / 2;
+			const rect = viewport.getBoundingClientRect();
+
+			// two-finger pan, then zoom around the midpoint
+			game.offsetX += mx - pinchMidX;
+			game.offsetY += my - pinchMidY;
+			zoomAt(mx - rect.left, my - rect.top, (game.scale * dist) / pinchDist);
+
+			pinchDist = dist;
+			pinchMidX = mx;
+			pinchMidY = my;
+			return;
+		}
+
 		if (drawing) {
 			drawAt(event);
 			return;
@@ -100,6 +146,7 @@
 	}
 
 	function endDrag(event: PointerEvent) {
+		pointers.delete(event.pointerId);
 		if (drawing) {
 			drawing = false;
 			return;
@@ -109,7 +156,8 @@
 		if (moved < 4) clickAt(event); // treat as click, not drag
 	}
 
-	function cancelDrag() {
+	function cancelDrag(event: PointerEvent) {
+		pointers.delete(event.pointerId);
 		dragging = false;
 		drawing = false;
 	}
