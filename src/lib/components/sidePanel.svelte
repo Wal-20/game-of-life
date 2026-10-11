@@ -15,6 +15,21 @@
 <div class={panelHidden ? 'hide' : ''}>
 	<aside class="panel" class:open>
 		<section>
+			<div class="palettes">
+				{#each color_palettes as [bg, fg], i (i)}
+					<button
+						class="swatch"
+						class:selected={game.selectedColorPalette === i}
+						style:--a={bg}
+						style:--b={fg}
+						onclick={() => (game.selectedColorPalette = i)}
+						aria-label="Palette {i + 1}"
+						aria-pressed={game.selectedColorPalette === i}
+					></button>
+				{/each}
+			</div>
+		</section>
+		<section>
 			<h3>Speed <b>{game.tickMs} ms</b></h3>
 			<input
 				class="range"
@@ -45,22 +60,6 @@
 					spellcheck="false"></textarea>
 				<button class="load" onclick={load} disabled={!rle.trim()}>Load</button>
 			</section>
-		</section>
-
-		<section>
-			<div class="palettes">
-				{#each color_palettes as [bg, fg], i (i)}
-					<button
-						class="swatch"
-						class:selected={game.selectedColorPalette === i}
-						style:--a={bg}
-						style:--b={fg}
-						onclick={() => (game.selectedColorPalette = i)}
-						aria-label="Palette {i + 1}"
-						aria-pressed={game.selectedColorPalette === i}
-					></button>
-				{/each}
-			</div>
 		</section>
 	</aside>
 	<div class="controls">
@@ -341,9 +340,6 @@
 		.palettes {
 			grid-template-columns: repeat(auto-fill, 30px);
 		}
-	}
-	.controls .draw {
-		display: none; /* hidden on mouse devices */
 	}
 
 	@media (pointer: coarse) {

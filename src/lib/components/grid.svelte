@@ -76,6 +76,7 @@
 
 	// mouse: ctrl draws. touch / pen: the draw mode toggle draws.
 	function wantsDraw(event: PointerEvent) {
+		if (game.drawMode) return true;
 		return event.pointerType === 'mouse' ? event.ctrlKey : game.drawMode;
 	}
 
