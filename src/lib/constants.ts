@@ -7,5 +7,3 @@ export const color_palettes = [
   ['#000', '#FFF'], // Black / White
   ['#393E46', '#FFF'], // Grey / White
 ]
-
-export const grid_area = 50;
