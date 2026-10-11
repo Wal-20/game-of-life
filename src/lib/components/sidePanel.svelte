@@ -3,9 +3,9 @@
 	import { loadRLE } from '../rleParser';
 	let panelHidden = $state(false);
 	let open = $state(false);
-	
+
 	let rle = $state('');
-	
+
 	function load() {
 		loadRLE(rle);
 		rle = '';
@@ -42,8 +42,7 @@
 					bind:value={rle}
 					rows="4"
 					placeholder="x = 3, y = 3, rule = B3/S23&#10;bob$2bo$3o!"
-					spellcheck="false"
-				></textarea>
+					spellcheck="false"></textarea>
 				<button class="load" onclick={load} disabled={!rle.trim()}>Load</button>
 			</section>
 		</section>
@@ -295,12 +294,12 @@
 	.controls .menu {
 		display: none;
 	}
-	
+
 	@media (max-width: 700px) {
 		.controls .menu {
 			display: flex;
 		}
-	
+
 		.panel {
 			display: none;
 			top: auto;
@@ -313,11 +312,11 @@
 			box-sizing: border-box;
 			transform: none; /* drops the desktop vertical centering */
 		}
-	
+
 		.panel.open {
 			display: flex;
 		}
-	
+
 		.palettes {
 			grid-template-columns: repeat(auto-fill, 30px);
 		}

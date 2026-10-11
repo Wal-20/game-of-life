@@ -141,7 +141,7 @@
 	oncontextmenu={(e) => e.preventDefault()}
 >
 	<div
-	    class={['canvas', game.playing && 'active']}
+		class={['canvas', game.playing && 'active']}
 		style:width="{game.half * 2 * CELL}px"
 		style:height="{game.half * 2 * CELL}px"
 		style:transform="translate({game.offsetX}px, {game.offsetY}px) scale({game.scale}) translate({-game.half *
