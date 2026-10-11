@@ -1,7 +1,13 @@
-<script>
-	import Grid from "#lib/components/grid.svelte";
-	import SidePanel from "#lib/components/sidePanel.svelte";
+<script lang="ts">
+	import Grid from '../lib/components/grid.svelte';
+	import SidePanel from '../lib/components/sidePanel.svelte';
 </script>
 
-<SidePanel/>
-<Grid/>
+<div class="layout">
+	<SidePanel />
+	<Grid />
+</div>
+
+<style>
+	.layout { display: flex; height: 100vh; }
+</style>
