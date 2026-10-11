@@ -1,7 +1,15 @@
 <script lang="ts">
 	import { game, restart, color_palettes } from '../game.svelte';
+	import { loadRLE } from '../rleParser';
 	let panelHidden = $state(false);
 	let open = $state(false);
+	
+	let rle = $state('');
+	
+	function load() {
+		loadRLE(rle);
+		rle = '';
+	}
 </script>
 
 <div class={panelHidden ? 'hide' : ''}>
@@ -28,6 +36,16 @@
 				<span>Fade</span>
 				<input type="checkbox" bind:checked={game.fade} />
 			</label>
+			<section>
+				<h3>Import RLE</h3>
+				<textarea
+					bind:value={rle}
+					rows="4"
+					placeholder="x = 3, y = 3, rule = B3/S23&#10;bob$2bo$3o!"
+					spellcheck="false"
+				></textarea>
+				<button class="load" onclick={load} disabled={!rle.trim()}>Load</button>
+			</section>
 		</section>
 
 		<section>
