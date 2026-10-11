@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { game, on, refs, CELL, MIN_SCALE, MAX_SCALE, birthCell, killCell, gameLoop, centerView } from '../game.svelte';
 
@@ -10,6 +11,9 @@
 	let originY = 0;
 	let moved = 0;
 	let drawing = false;
+
+	const FADE_MS = 150;
+	const fadeMs = $derived(game.fade ? FADE_MS : 0);
 
 	onMount(() => {
 		refs.viewport = viewport;
@@ -136,8 +140,11 @@
 			{@const [x, y] = key.split(',').map(Number)}
 			<div
 				class="cell"
+				class:glow={game.glow}
 				style:left="{(x + game.half) * CELL}px"
 				style:top="{(y + game.half) * CELL}px"
+				in:fade={{ duration: fadeMs }}
+				out:fade={{ duration: fadeMs }}
 			></div>
 		{/each}
 	</div>
@@ -158,14 +165,14 @@
 />
 
 <style>
-	.viewport {
-		flex: 1;
-		min-width: 0;
-		position: relative;
-		overflow: hidden;
-		touch-action: none;
-		background-color: #f8fafc;
-	}
+    .viewport {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	overflow: hidden;
+	touch-action: none;
+	background-color: var(--bg);
+    }
 
 	.viewport.dragging {
 		cursor: grabbing;
@@ -178,15 +185,18 @@
 		left: 0;
 		transform-origin: 0 0;
 		will-change: transform;
-		background-color: white;
 		background-size: 10px 10px;
-		outline: 1px solid lightgray;
+		background-color: var(--bg);
+		outline: 1px solid var(--fg);
 	}
 
 	.cell {
 		position: absolute;
 		width: 10px;
 		height: 10px;
-		background: #3b82f6;
+		background-color: var(--fg);
 	}
+	.cell.glow {
+		box-shadow: 0 0 6px var(--fg);
+	}	
 </style>
