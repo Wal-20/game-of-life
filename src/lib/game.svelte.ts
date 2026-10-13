@@ -1,13 +1,12 @@
 import { SvelteSet } from 'svelte/reactivity';
 
 export const color_palettes = [
-  ['#FFF8B0', '#AEEED3'], // sky blue
+  ['#393E46', '#FFF'], // Grey / White
   ['#FCF1D0', '#22396F'], // Beige / Dark blue
   ['#EEEAD7', '#757D6F'], // camo color
   ['#FFFBE9', '#A4BE7B'], // Beige / green
   ['#E1DCC9', '#1F150C'], // Beige / brown
   ['#000', '#FFF'], // Black / White
-  ['#393E46', '#FFF'], // Grey / White
 ];
 
 export const CELL = 10;
@@ -23,7 +22,7 @@ export const game = $state({
   playing: false,
   half: INITIAL_CELLS / 2,
   tickMs: 200,
-  selectedColorPalette: 6,
+  selectedColorPalette: 0,
   glow: false,
   fade: false,
   drawMode: false,
