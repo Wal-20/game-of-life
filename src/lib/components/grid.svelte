@@ -6,6 +6,7 @@
 		on,
 		refs,
 		CELL,
+		restart,
 		MIN_SCALE,
 		MAX_SCALE,
 		birthCell,
@@ -76,6 +77,7 @@
 
 	// mouse: ctrl draws. touch / pen: the draw mode toggle draws.
 	function wantsDraw(event: PointerEvent) {
+		if (event.pointerType === 'mouse' && game.drawMode) return true;
 		if (event.pointerType !== 'mouse') return game.drawMode;
 		return event.ctrlKey || event.button === 2;
 	}
@@ -215,9 +217,13 @@
 
 <svelte:window
 	onkeydown={(e) => {
-		if (e.code !== 'Space') return;
-		e.preventDefault();
-		game.playing = !game.playing;
+		if ((e.target as HTMLElement).matches('textarea, input[type="text"]')) return;
+		if (e.code === 'Space') {
+			e.preventDefault();
+			game.playing = !game.playing;
+		} else if (e.code === 'KeyR' && !e.ctrlKey && !e.metaKey) {
+			restart();
+		}
 	}}
 />
 

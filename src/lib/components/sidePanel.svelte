@@ -67,6 +67,7 @@
 		<p>Ctrl + LMB to draw</p>
 		<p>RMB to erase</p>
 		<p>Space to start/pause the game</p>
+		<p>R to restart</p>
 	</div>
 	<div class="controls">
 		<button
