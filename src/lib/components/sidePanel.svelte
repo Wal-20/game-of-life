@@ -62,6 +62,12 @@
 			</section>
 		</section>
 	</aside>
+
+	<div class="hints">
+		<p>Ctrl + LMB to draw</p>
+		<p>Ctrl + RMB to erase</p>
+		<p>Space to start/pause the game</p>
+	</div>
 	<div class="controls">
 		<button
 			class="draw"
@@ -287,7 +293,19 @@
 		outline-offset: 2px;
 	}
 
-	/* play / restart */
+	.hints {
+		display: block;
+		position: fixed;
+		bottom: 16px;
+		left: 16px;
+		z-index: 10;
+		color: var(--fg);
+	}
+	.hints p {
+		font-size: 12px;
+		font-weight: 500;
+		margin: 5px 0;
+	}
 	.controls {
 		position: fixed;
 		bottom: 16px;
@@ -331,6 +349,10 @@
 			overflow-y: auto;
 			box-sizing: border-box;
 			transform: none; /* drops the desktop vertical centering */
+		}
+
+		.hints {
+			display: none;
 		}
 
 		.panel.open {

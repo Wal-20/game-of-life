@@ -76,12 +76,11 @@
 
 	// mouse: ctrl draws. touch / pen: the draw mode toggle draws.
 	function wantsDraw(event: PointerEvent) {
-		if (game.drawMode) return true;
-		return event.pointerType === 'mouse' ? event.ctrlKey : game.drawMode;
+		if (event.pointerType !== 'mouse') return game.drawMode;
+		return event.ctrlKey || event.button === 2;
 	}
 
 	function startDrag(event: PointerEvent) {
-		if (event.button !== 0) return;
 		pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 		(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
 
@@ -166,7 +165,11 @@
 	function drawAt(event: PointerEvent) {
 		if (game.playing) return;
 		const [cx, cy] = cellAt(event);
-		birthCell(cx, cy); // add() on a Set is idempotent, so re-visiting a cell is harmless
+		if (event.buttons & 2) {
+			killCell(cx, cy); // right held
+		} else {
+			birthCell(cx, cy); // left, touch, pen
+		}
 	}
 
 	function clickAt(event: PointerEvent) {
