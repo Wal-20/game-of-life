@@ -4,9 +4,11 @@ export const color_palettes = [
   ['#393E46', '#FFF'], // Grey / White
   ['#FCF1D0', '#22396F'], // Beige / Dark blue
   ['#EEEAD7', '#757D6F'], // camo color
-  ['#FFFBE9', '#A4BE7B'], // Beige / green
+  ['#FFFBE9', '#A4BE7B'], // Beige / light green
   ['#E1DCC9', '#1F150C'], // Beige / brown
   ['#000', '#FFF'], // Black / White
+  ['#ECE8AF', '#4A943E'], // Beige / light green
+  ['#f8fafc', '#3b82f6'], // White / light blue
 ];
 
 export const CELL = 10;

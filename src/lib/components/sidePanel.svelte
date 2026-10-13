@@ -65,7 +65,7 @@
 
 	<div class="hints">
 		<p>Ctrl + LMB to draw</p>
-		<p>Ctrl + RMB to erase</p>
+		<p>RMB to erase</p>
 		<p>Space to start/pause the game</p>
 	</div>
 	<div class="controls">
