@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { game, restart, color_palettes } from '../game.svelte';
 	import { loadRLE } from '../rleParser';
-	let panelHidden = $state(false);
+	let { panelHidden = false } = $props();
 	let open = $state(false);
 
 	let rle = $state('');
@@ -64,10 +64,11 @@
 	</aside>
 
 	<div class="hints">
-		<p>Ctrl + LMB to draw</p>
-		<p>RMB to erase</p>
-		<p>Space to start/pause the game</p>
-		<p>R to restart</p>
+		<p>- Space: Start/pause the game</p>
+		<p>- Ctrl + LMB: Draw</p>
+		<p>- RMB: Erase</p>
+		<p>- R: Restart</p>
+		<p>- H: Hide UI</p>
 	</div>
 	<div class="controls">
 		<button

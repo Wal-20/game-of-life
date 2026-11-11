@@ -9,6 +9,14 @@
 	const block = (e: Event) => {
 		if (!allowed(e)) e.preventDefault();
 	};
+
+	let panelHidden = $state(false);
+
+	function handleToggleSidePanel(event: KeyboardEvent) {
+		if (event.key.toLowerCase() === 'h') {
+			panelHidden = !panelHidden;
+		}
+	}
 </script>
 
 <svelte:document
@@ -17,10 +25,11 @@
 	oncut={block}
 	ondragstart={block}
 	oncontextmenu={block}
+	onkeydown={handleToggleSidePanel}
 />
 
 <div class="layout chivo-mono-1" style:--bg={colors[0]} style:--fg={colors[1]}>
-	<SidePanel />
+	<SidePanel {panelHidden} />
 	<Grid />
 </div>
 
